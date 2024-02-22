@@ -1,1 +1,8 @@
-<h2>Hello from index.erb</h2>
+<% @products.each do |product|%>
+
+    <div class="products"> <%= product['name'] %> </div>
+
+<% end %>
+
+<div class="products"> HELLOOPO </div>
+

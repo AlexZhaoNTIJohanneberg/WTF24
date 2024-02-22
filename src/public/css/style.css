@@ -1,0 +1,11 @@
+body{
+    background-color: blue;
+}
+
+.products{
+    height: 100px;
+    width: 100px;
+    border-style: solid;
+    border-color: black;
+    border-radius: 2px;
+}

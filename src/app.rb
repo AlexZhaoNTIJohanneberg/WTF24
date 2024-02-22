@@ -9,8 +9,8 @@ class App < Sinatra::Base
     end
 
     get '/everydaymart' do
-        erb :index
         @products = db.execute('SELECT * FROM products')
+        erb :index
     end
 
     
