@@ -1,8 +1,7 @@
 <% @products.each do |product|%>
 
-    <div class="products"> <%= product['name'] %> </div>
+    <div class="products">
+        <a href="/everydaymart/<%= product['id']%>"><%= product['name'] %></a>
+    </div>
 
 <% end %>
-
-<div class="products"> HELLOOPO </div>
-

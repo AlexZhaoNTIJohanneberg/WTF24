@@ -13,5 +13,10 @@ class App < Sinatra::Base
         erb :index
     end
 
+    get '/everydaymart/:id' do |product_id|
+        @product_selected = db.execute('SELECT * FROM products WHERE id = ?', product_id.to_i).first
+        erb :show
+    end
+
     
 end

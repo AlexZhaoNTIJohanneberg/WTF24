@@ -9,30 +9,81 @@ def db
 end
 
 def drop_tables
-    db.execute('DROP TABLE IF EXISTS fruits')
+    db.execute('DROP TABLE IF EXISTS cart_items'),
+    db.execute('DROP TABLE IF EXISTS categories'),
+    db.execute('DROP TABLE IF EXISTS orders'),
+    db.execute('DROP TABLE IF EXISTS payments'),
+    db.execute('DROP TABLE IF EXISTS products'),
+    db.execute('DROP TABLE IF EXISTS reviews'),
+    db.execute('DROP TABLE IF EXISTS users')
+
 end
 
 def create_tables
 
-    db.execute('CREATE TABLE fruits(
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT NOT NULL,
-        description TEXT
-    )')
+    db.execute('CREATE TABLE "cart_items" (
+        "id"	INTEGER,
+        "quantity"	INTEGER NOT NULL,
+        "cost"	INTEGER NOT NULL,
+        "name"  TEXT NOT NULL,
+        PRIMARY KEY("id" AUTOINCREMENT)
+    );')
+
+    db.execute('CREATE TABLE "categories" (
+        "id"	INTEGER,
+        "name"	TEXT NOT NULL,
+        PRIMARY KEY("id" AUTOINCREMENT)
+    );')
+
+    db.execute('CREATE TABLE "orders" (
+        "id"	INTEGER,
+        "total_items"	INTEGER NOT NULL,
+        "total_cost"	INTEGER NOT NULL,
+        PRIMARY KEY("id" AUTOINCREMENT)
+    );')
+
+    db.execute('CREATE TABLE "payments" (
+        "id"	INTEGER,
+        "amount"	INTEGER NOT NULL,
+        "payment_type"  TEXT NOT NULL,
+        PRIMARY KEY("id" AUTOINCREMENT)
+    );')
+
+    db.execute('CREATE TABLE "products" (
+        "id"	INTEGER,
+        "name"	TEXT NOT NULL,
+        "price"	TEXT NOT NULL,
+        "rating"	TEXT NOT NULL,
+        "description"	TEXT,
+        PRIMARY KEY("id" AUTOINCREMENT)
+    );')
+
+    db.execute('CREATE TABLE "reviews" (
+        "id"	INTEGER,
+        "rating"	INTEGER NOT NULL,
+        "comment"	TEXT NOT NULL,
+        PRIMARY KEY("id" AUTOINCREMENT)
+    );')
+
+    db.execute('CREATE TABLE "users" (
+        "id"	INTEGER,
+        "first_name"	TEXT NOT NULL,
+        "last_name"	TEXT NOT NULL,
+        "address"	TEXT NOT NULL,
+        PRIMARY KEY("id" AUTOINCREMENT)
+    );')
 
 end
 
 def seed_tables
 
-    fruits = [
-        {name: 'Pear', description: 'a sweet, juicy, yellow or green fruit with a round base and slightly pointed top'},
-        {name: 'Apple', description: 'a round, edible fruit having a red, green, or yellow skin'},
-        {name: 'Banana', description: 'a long, curved fruit with a usually yellow skin and soft, sweet flesh inside'},
-        {name: 'Orange', description: 'a round, orange-colored fruit that is valued mainly for its sweet juice'}
+    products = [
+        {name: 'blue t-shirt', price: '200', rating: '5', description: 'plain blue t-shirt made out of cotton'}
     ]
 
-    fruits.each do |fruit|
-        db.execute('INSERT INTO fruits (name, description) VALUES (?,?)', fruit[:name], fruit[:description])
+
+    products.each do |product|
+        db.execute('INSERT INTO products (name, price, rating, description) VALUES (?,?,?,?)', product[:name], product[:price], product[:rating], product[:description])
     end
 
 end
