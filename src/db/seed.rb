@@ -53,7 +53,6 @@ def create_tables
         "id"	INTEGER,
         "name"	TEXT NOT NULL,
         "price"	TEXT NOT NULL,
-        "rating"	TEXT NOT NULL,
         "description"	TEXT,
         PRIMARY KEY("id" AUTOINCREMENT)
     );')
@@ -62,6 +61,7 @@ def create_tables
         "id"	INTEGER,
         "rating"	INTEGER NOT NULL,
         "comment"	TEXT NOT NULL,
+        "product_id"	TEXT NOT NULL
         PRIMARY KEY("id" AUTOINCREMENT)
     );')
 
