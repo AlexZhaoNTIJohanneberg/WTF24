@@ -54,6 +54,7 @@ def create_tables
         "name"	TEXT NOT NULL,
         "price"	TEXT NOT NULL,
         "description"	TEXT,
+        "category_id"   INTEGER,
         PRIMARY KEY("id" AUTOINCREMENT)
     );')
 

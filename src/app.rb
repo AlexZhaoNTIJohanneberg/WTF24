@@ -14,15 +14,16 @@ class App < Sinatra::Base
         erb :index
     end
 
-    get '/everydaymart/:id' do |product_id|
-        @product_selected = db.execute('SELECT * FROM products WHERE id = ?', product_id.to_i).first
-        @reviews = db.execute('SELECT * FROM reviews JOIN products ON reviews.product_id = products.id WHERE product_id = ?', product_id.to_i)
-        erb :show
+    get '/everydaymart/:category' do |category|
+        #@category_selected = db.execute('SELECT * FROM categories WHERE name = ?', category.to_s).first
+        @category_products = db.execute('SELECT * FROM categories as cat JOIN products as p ON cat.id = p.category_id WHERE cat.name = ?', category.to_s)
+        erb :category
     end
 
-    get '/everydaymart/:name' do |category|
-        @category_selected = db.execute('SELECT * FROM category')
-    end
-
-    
+    # get '/everydaymart/:id' do |product_id|
+    #     @product_selected = db.execute('SELECT * FROM products WHERE id = ?', product_id.to_i).first
+    #     @reviews = db.execute('SELECT * FROM reviews JOIN products ON reviews.product_id = products.id WHERE product_id = ?', product_id.to_i)
+    #     erb :show
+    # end
+  
 end
