@@ -1,18 +1,20 @@
-<h2> Categories </h2>
+<div id="hd"> 
 
-<% @categories.each do |category| %>
-
-    <div class="">
-        <a href="/everydaymart/<%= category['name'] %>"><%= category['name'] %></a>
+    <div id="categories">
+        <h2> Categories </h2>
+        <% @categories.each do |category| %>
+            <div class="category">
+                <a href="/everydaymart/<%= category['id'] %>"><%= category['name'] %></a>
+            </div>
+        <% end %>
     </div>
+    
+</div>
 
-<% end %>
 
 <h2> Products </h2>
 <% @products.each do |product|%>
-
     <div class="products">
-        <a href="/everydaymart/<%= product['id'] %>"><%= product['name'] %></a>
+        <a href="/everydaymart/<%= product['category_id'] %>/<%= product['id'] %>"><%= product['name'] %></a>
     </div>
-
 <% end %>

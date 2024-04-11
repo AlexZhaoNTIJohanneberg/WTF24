@@ -1,0 +1,13 @@
+    <div>
+        <form action='/everydaymart/login' method="POST">
+        <input type='text' name="username" placeholder="username"></input>
+        <input type='text' name="password" placeholder="password"></input>
+        <button type='submit'>login</button>
+        </form>
+    </div>
+
+<% if @error == true %>
+    <p> lösenordet är fel </p>
+<% end %>
+
+
