@@ -1,5 +1,7 @@
 class App < Sinatra::Base
 
+    enable :sessions
+
     def db
         if @db == nil
             @db = SQLite3::Database.new('./db/db.sqlite')
@@ -9,6 +11,7 @@ class App < Sinatra::Base
     end
 
     get '/everydaymart' do
+        # session[:user_id]
         @products = db.execute('SELECT * FROM products')
         @categories = db.execute('SELECT * FROM categories')
         erb :index
@@ -29,12 +32,10 @@ class App < Sinatra::Base
     end
 
     get '/everydaymart/login' do
-        @error = false
         erb :login
     end
 
     post '/everydaymart/login' do 
-        @authenticated = false
         username = params['username']
         cleartext_password = params['password'] 
 
@@ -44,18 +45,25 @@ class App < Sinatra::Base
 
         if password_from_db == cleartext_password 
             session[:user_id] = user['id']
+            session[:customer] = true
             redirect "/everydaymart"
-            @authenticated = true
         else
-            @error = true 
-            @authenticated = false
+
         end
     end
 
+    get '/everydaymart/logout' do
+        session.destroy
+        erb :logout
+        redirect "/everydaymart"
+    end
+
     get '/everydaymart/cart' do
-        if @authenticated == false
+        user_id = session[:user_id]
+        if session[:customer] != true
             redirect "/everydaymart/login"
         end
+        @cart_items = db.execute('SELECT * FROM cart_items Where id=?', user_id)
         erb :cart
     end
 
@@ -66,31 +74,18 @@ class App < Sinatra::Base
     end
     
     get '/everydaymart/:category/:product_id' do |category, product_id|
+        user_id = session[:user_id]
+        @category_selected = category
         @category_products = db.execute('SELECT * FROM categories as cat JOIN products as p ON cat.id = p.category_id WHERE cat.name = ?', category.to_s)
         @product_selected = db.execute('SELECT * FROM products WHERE id = ?', product_id.to_i).first
         @reviews = db.execute('SELECT * FROM reviews JOIN products ON reviews.product_id = products.id WHERE product_id = ?', product_id.to_i)
         erb :show
     end
 
-    # get '/everydaymart/:id' do |product_id|
-    #     @product_selected = db.execute('SELECT * FROM products WHERE id = ?', product_id.to_i).first
-    #     @reviews = db.execute('SELECT * FROM reviews JOIN products ON reviews.product_id = products.id WHERE product_id = ?', product_id.to_i)
-    #     erb :show
-    # end
-
-    # get '/everydaymart/:show' do |show|
-    #     @prodcat_selected = db.execute('SELECT * FROM products,categories WHERE route_name = ?', show.to_s).first
-    #     erb :test
-    # end
-
-    # get '/everydaymart/:show' do |show|
-    #     @category_selected = db.execute('SELECT * FROM categories WHERE name = ?', category.to_s).first
-    #     @product_selected = db.execute('SELECT * FROM products WHERE route_name = ?', product.to_s).first
-    #     @category_products = db.execute('SELECT * FROM categories as cat JOIN products as p ON cat.id = p.category_id WHERE cat.name = ?', category.to_s)
-    #     @reviews = db.execute('SELECT * FROM reviews WHERE review_id = ?', @product_selected[''])
-    #     erb :show
-    # end
-
-
+    post '/everydaymart/:category/:product_id' do
+        id = params[@product_selected['id']]
+        query = 'INSERT INTO cart_items (id) VALUES (?) RETURNING id'
+        result = db.execute(query, id).first
+    end
   
 end
