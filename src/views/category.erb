@@ -3,7 +3,7 @@ CATEGORIES
 <% @category_products.each do |product| %>
 
     <div>
-        <a href="/everydaymart/<%= @category_selected['id'] %>/<%= product['id'] %>"><%= product['name'] %></a>
+        <a href="/<%= @category_selected['id'] %>/<%= product['id'] %>"><%= product['name'] %></a>
     </div>
 
 <% end %>

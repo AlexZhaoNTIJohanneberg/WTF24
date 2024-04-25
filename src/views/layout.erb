@@ -9,28 +9,28 @@
 <body>
     <div id="brand">
         <h1>
-            <a href="/everydaymart" >Everydaymart</a>
+            <a href="/" >Everydaymart</a>
         </h1>
 
         <%= session[:user_id] %>
         
         <% if session[:customer] != true %>
             <div>
-                <a href="/everydaymart/login">Login</a>
+                <a href="/login">Login</a>
             </div>
             <div>
-                <a href="/everydaymart/signup">Sign up</a>
+                <a href="/signup">Sign up</a>
             </div>
         <% end %>
         
         <% if session[:customer] == true %>
             <div>
-                <a href="/everydaymart/logout">Log out</a>
+                <a href="/logout">Log out</a>
             </div>
         <% end %>
 
             <div>
-                <a href="/everydaymart/cart">Cart</a>
+                <a href="/cart">Cart</a>
             </div>
 
     </div>

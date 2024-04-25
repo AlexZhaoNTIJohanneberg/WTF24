@@ -5,9 +5,10 @@
 <p>Price: <%= @product_selected['price']%></p>
 <p>Rating: <%= @product_selected['rating']%></p>
 
+
+
 <div>
-    <form action='/everydaymart/<%= @category_selected %>/<%= @product_selected['id']%>' method="POST">
-    <input type="hidden" id="<%= @product_selected['id']%>"></input>
+    <form action='/<%= @category_selected %>/<%= @product_selected['id']%>' method="POST">
     <button type='submit'>Add to Cart</button>
     </form>
 </div>
