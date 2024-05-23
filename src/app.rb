@@ -17,7 +17,7 @@ class App < Sinatra::Base
     # end
 
     get '/' do
-        # session[:user_id]
+        session[:user_id]
         @products = db.execute('SELECT * FROM products')
         @categories = db.execute('SELECT * FROM categories')
         erb :index
@@ -49,10 +49,12 @@ class App < Sinatra::Base
 
         password_from_db = BCrypt::Password.new(user['password'])
 
-        if password_from_db == cleartext_password 
+        if password_from_db == cleartext_password
+            session[:username] = user['username']
             session[:user_id] = user['id']
-            @order = db.execute('INSERT INTO orders (total_items, total_cost, user_id) VALUES (?,?,?) RETURNING id', 0, 0, session[:user_id])
-            # session[:order] = @order
+            session[:authorization] = user['authorization']
+            session[:cart_items] = []
+            result = db.execute('INSERT INTO cart (user_id) VALUES (?) RETURNING id', session[:user_id]).first
             redirect "/"
         else
 
@@ -61,27 +63,32 @@ class App < Sinatra::Base
 
     get '/logout' do
         session.destroy
-        erb :logout
         redirect "/"
+    end
+
+    get '/new' do
+        erb :new
     end
 
     get '/cart' do
         user_id = session[:user_id]
+        @items = session[:cart_items] # session
+        @cart_items = db.execute('SELECT * FROM cart_items WHERE user_id = ?', user_id) #sparad i databas
         if session[:user_id] == nil
             redirect "/login"
         end
-        @cart_items = db.execute('SELECT * FROM cart_items Where id=?', user_id)
+        @products = db.execute('SELECT * FROM products').first
         erb :cart
     end
 
-    get '/:category' do |category|
+    get '/category/:category' do |category|
         user_id = session[:user_id]
         @category_selected = db.execute('SELECT * FROM categories WHERE id = ?', category.to_i).first
         @category_products = db.execute('SELECT * FROM categories as cat JOIN products as p ON cat.id = p.category_id WHERE cat.id = ?', category.to_i)
         erb :category
     end
     
-    get '/:category/:product_id' do |category, product_id|
+    get '/product/:category/:product_id' do |category, product_id|
         user_id = session[:user_id]
         @category_selected = category
         @category_products = db.execute('SELECT * FROM categories as cat JOIN products as p ON cat.id = p.category_id WHERE cat.name = ?', category.to_s)
@@ -89,23 +96,35 @@ class App < Sinatra::Base
         @reviews = db.execute('SELECT * FROM reviews JOIN products ON reviews.product_id = products.id WHERE product_id = ?', product_id.to_i)
         erb :show
     end
-
-    post '/:category/:product_id' do |category, product_id|
+   
+    post '/product/:category/:product_id' do |category, product_id|
         user_id = session[:user_id]
         if  session[:user_id] == nil
             redirect "/login"
         end
-        # @category_selected = db.execute('SELECT * FROM categories WHERE id = ?', category.to_i).first
-        @product_selected = db.execute('SELECT * FROM products WHERE id = ?', product_id.to_i).first
-        
-        quantity = 1
-        cost = @product_selected['cost'].to_i
-        name = @product_selected['name'].to_s
-        product_id = @product_selected['product_id'].to_i
-        order_id = db.execute('SELECT * FROM orders WHERE user_id = ?', session[:user_id]).first
-        query = 'INSERT INTO cart_items (quantity, cost, name, product_id, order_id) VALUES (?,?,?,?,?) RETURNING id'
-        result = db.execute(query, quantity, cost, name, product_id, order_id).first
-        redirect "/#{@category_selected}/#{@product_selected}"
+
+        quantity = params['quantity'].to_i
+        cost = params['cost'].to_i
+        product_id = params['product_id'].to_i
+        user_id = session[:user_id]
+        query = 'INSERT INTO cart_items (quantity, product_id, cost, user_id) VALUES (?,?,?,?) RETURNING id'
+        result = db.execute(query, product_id, quantity, cost, user_id).first
+        session[:cart_items] << product_id.to_i
+        redirect "/cart"
+    end
+
+    post '/reviews/:product_id' do
+        if session[:user_id] == nil
+            redirect "/login"
+        end
+
+        rating = params['rating'].to_i
+        review = params['review'].to_s
+        product_id = params['product_id'].to_i
+        user_id = session[:user_id].to_i
+        query = 'INSERT INTO reviews (rating, review, product_id, user_id) VALUES (?,?,?,?) RETURNING id'
+        result = db.execute(query, rating, review, product_id, user_id).first
+        redirect back
     end
   
 end

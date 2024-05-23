@@ -4,17 +4,17 @@
         <h2> Categories </h2>
         <% @categories.each do |category| %>
             <div class="category">
-                <a href="/<%= category['id'] %>"><%= category['name'] %></a>
+                <a href="/category/<%= category['id'] %>"><%= category['name'] %></a>
             </div>
         <% end %>
     </div>
     
 </div>
 
-
 <h2> Products </h2>
+
 <% @products.each do |product|%>
     <div class="products">
-        <a href="/<%= product['category_id'] %>/<%= product['id'] %>"><%= product['name'] %></a>
+        <a href="/product/<%= product['category_id'] %>/<%= product['id'] %>"><%= product['name'] %></a>
     </div>
 <% end %>

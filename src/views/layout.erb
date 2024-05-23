@@ -11,10 +11,8 @@
         <h1>
             <a href="/" >Everydaymart</a>
         </h1>
-
-        <%= session[:user_id] %>
         
-        <% if session[:customer] != true %>
+        <% if session[:user_id] == nil %>
             <div>
                 <a href="/login">Login</a>
             </div>
@@ -23,15 +21,25 @@
             </div>
         <% end %>
         
-        <% if session[:customer] == true %>
+        <% if session[:user_id] != nil %>
             <div>
                 <a href="/logout">Log out</a>
             </div>
         <% end %>
 
+        <div>
+            <a href="/cart">Cart</a>
+        </div>
+
+        <% if session[:authorization] == 1 %>
             <div>
-                <a href="/cart">Cart</a>
+                <a href="/new">Add product</a>
             </div>
+        <% end %>
+
+        <div id="name">
+        <%= session[:username]%>
+        </div>
 
     </div>
     <%= yield %>

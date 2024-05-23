@@ -1,9 +1,12 @@
-itemssss!
+items
+<%= @items.inspect %>
+
+cart itemssss!
 
 <%= @cart_items.inspect %>
 
-<% @cart_items.each do |item| %>
 
 
-
+<% @items.each do |item| %>
+   <% cart_items = db.execute('SELECT * FROM categories WHERE id = ?', item) %>
 <% end %>

@@ -76,3 +76,8 @@ grid-template-rows: max-content 1fr 10%;
     border-color: black;
     border-radius: 2px;
 }
+
+#name{
+    position: absolute;
+    right: 100px;
+}

@@ -89,6 +89,13 @@ def seed_tables
 
 end
 
+def delete_records
+
+    # db.execute('DELETE FROM records WHERE')
+    
+end
+
 drop_tables
 create_tables
 seed_tables
+delete_records
