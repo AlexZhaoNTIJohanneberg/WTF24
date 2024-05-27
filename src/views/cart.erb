@@ -3,10 +3,10 @@ items
 
 cart itemssss!
 
-<%= @cart_items.inspect %>
+<% @cart_items.inspect %>
 
 
 
 <% @items.each do |item| %>
-   <% cart_items = db.execute('SELECT * FROM categories WHERE id = ?', item) %>
+   <%= cart_items = db.execute('SELECT * FROM categories WHERE id = ?', item) %>
 <% end %>

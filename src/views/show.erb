@@ -4,8 +4,12 @@
 
 <p>Product: <%= @product_selected['name'] %></p>
 <p>Description: <%= @product_selected['description']%></p>
-<p>Price: <%= @product_selected['price']%></p>
-<p>Rating: <%= @product_selected['rating']%></p>
+<p>Price: <%= @product_selected['cost']%> SEK </p>
+<p>Rating:
+<% @reviews.each do |review| %>
+
+<% end %>
+</p>
 
 
 <div>
@@ -20,18 +24,34 @@
 
 <h3>reviews</h3>
 
-<h4>Add review</h4>
-<div>
-    <form action='/reviews/<%= @product_selected['id']%>' method="POST">
-        <input type="number" name="rating" min="1" max="5" placeholder="rating"</input>
-        <input type="text" name="review" placeholder="review" </input>
-        <input type="hidden" value='<%=@product_selected['id']%>' name="product_id"</input>
-        <button type='submit'>Add review</button>
-    </form>    
-</div>
+    <h4>Add review</h4>
+    <div>
+        <form action='/reviews/<%= @product_selected['id']%>' method="POST">
+            <input type="number" name="rating" min="1" max="5" placeholder="rating"></input>
+            <input type="text" name="review" placeholder="review"></input>
+            <input type="hidden" value='<%=@product_selected['id']%>' name="product_id"></input>
+            <button type='submit'>Add review</button>
+        </form>    
+    </div>
+
+<%= @reviews.inspect %>
 
 <% @reviews.each do |review|%>
 
-    <p> <%= review['rating'] %>, <%= review['review'] %></p>
+    <div>
+        <p>
+        <%= review['rating'] %>, <%= review['review'] %>
+        </p>
+        
+        <% if session[:user_id] == review['user_id'] %>
+            <a href="/reviews/<%=@product_selected['id']%>/update">
+                <button type="button">Edit review</button>
+            </a>
+            <form action='/review/<%= @product_selected['id'] %>/delete' method='post'>
+                <input type='hidden' value='<%=review['product_id']%>' name="review_id"</input>
+                <button type="submit">DELETE</button>
+            </form>
+        <% end %>
+    </div>
 
 <% end %>

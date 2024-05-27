@@ -1,0 +1,8 @@
+Previous review
+
+<form action='/review/<%=@product_selected['id']%>/update' method='post'>
+    <input type='number' name='rating' min="1" max="5" placeholder="rating"></input> 
+    <input type="text" name="review" placeholder="review"></input>
+    <input type="hidden" value='<%=@product_selected['id']%>' name="product_id"></input>
+    <button type='submit'>Update</button>
+</form>

@@ -1,3 +1,5 @@
+require_relative 'models/products'
+
 class App < Sinatra::Base
 
     enable :sessions
@@ -10,15 +12,9 @@ class App < Sinatra::Base
         return @db
     end
 
-    # def order
-    #     @order = db.execute('INSERT INTO orders (total_items, total_cost, user_id) VALUES (?,?,?) RETURNING id', 0, 0, session[:user])
-    #     # @order = db.execute("SELECT * FROM orders JOIN users ON orders.user_id = user.id WHERE user_id = ?", session[:user_id])
-    #     # @products = db.execute("SELECT * FROM orders JOIN cart_items ON orders.id = cart_items.order_id WHERE user_id = ?", session[:user_id])
-    # end
-
     get '/' do
         session[:user_id]
-        @products = db.execute('SELECT * FROM products')
+        @products = Product.all
         @categories = db.execute('SELECT * FROM categories')
         erb :index
     end
@@ -77,7 +73,7 @@ class App < Sinatra::Base
         if session[:user_id] == nil
             redirect "/login"
         end
-        @products = db.execute('SELECT * FROM products').first
+        @products = Product.all
         erb :cart
     end
 
@@ -92,7 +88,8 @@ class App < Sinatra::Base
         user_id = session[:user_id]
         @category_selected = category
         @category_products = db.execute('SELECT * FROM categories as cat JOIN products as p ON cat.id = p.category_id WHERE cat.name = ?', category.to_s)
-        @product_selected = db.execute('SELECT * FROM products WHERE id = ?', product_id.to_i).first
+        # @product_selected = db.execute('SELECT * FROM products WHERE id = ?', product_id.to_i).first
+        @product_selected = Product.find(product_id)
         @reviews = db.execute('SELECT * FROM reviews JOIN products ON reviews.product_id = products.id WHERE product_id = ?', product_id.to_i)
         erb :show
     end
@@ -124,6 +121,44 @@ class App < Sinatra::Base
         user_id = session[:user_id].to_i
         query = 'INSERT INTO reviews (rating, review, product_id, user_id) VALUES (?,?,?,?) RETURNING id'
         result = db.execute(query, rating, review, product_id, user_id).first
+        redirect back
+    end
+
+    get '/reviews/:product_id/update' do |product_id|
+        @product_selected = db.execute('SELECT * FROM products WHERE id = ?', product_id).first
+        @reviews = db.execute('SELECT * from reviews')
+        erb :edit
+    end
+
+    post '/review/:product_id/update' do 
+        rating = params['rating'].to_i
+        review = params['review'].to_s
+        product_id = params['product_id'].to_i
+        user_id = session[:user_id].to_i
+        query = 'UPDATE reviews SET rating = ?, review = ? WHERE user_id = ?'
+        result = db.execute(query, rating, review, user_id).first
+        redirect '/'
+    end
+
+    post '/review/:product_id/delete' do
+        product_id = params['product_id'].to_i
+        user_id = session[:user_id].to_i
+        result = db.execute('DELETE FROM reviews WHERE user_id = ? and product_id = ?', user_id, product_id)
+        redirect back
+    end
+
+    get '/product/new' do
+        @products = db.execute('SELECT * FROM products')
+        erb :new
+    end
+
+    post '/product/new' do
+        name = params['product_name']
+        cost = params['product_cost']
+        description = params['product_description']
+        category_id = params['category_id']
+        query = 'INSERT INTO products (name, cost, description, category_id) VALUES (?,?,?,?) RETURNING ID'
+        result = db.execute(query, name, cost, description, category_id).first
         redirect back
     end
   

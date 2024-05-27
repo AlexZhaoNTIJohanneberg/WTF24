@@ -61,7 +61,7 @@ def create_tables
     db.execute('CREATE TABLE "reviews" (
         "id"	INTEGER,
         "rating"	INTEGER NOT NULL,
-        "comment"	TEXT NOT NULL,
+        "review"	TEXT NOT NULL,
         "product_id"	TEXT NOT NULL
         PRIMARY KEY("id" AUTOINCREMENT)
     );')

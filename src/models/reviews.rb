@@ -1,10 +1,10 @@
-module Product
+module Review
     def self.all
-        db.execute('SELECT * FROM products')
+        db.execute('SELECT * FROM review')
     end
 
-    def self.find(product_id) 
-        db.execute('SELECT * FROM products WHERE id = ?', product_id).first
+    def self.find(review_id) 
+        db.execute('SELECT * FROM products WHERE id = ?', review_id).first
     end
     
     def self.db 
